@@ -1,17 +1,9 @@
 const fs = require('fs');
 const dir = process.argv.slice(2, 3).pop();
 
-console.log(dir);
-
+let scanSubdir = process.argv.slice(3, 4);
 let count = 0;
 let files;
-
-try {
-    files = fs.readdirSync(dir);
-} catch (e) {
-    console.log(`couldn't read dir`);
-    console.log(e);
-}
 
 function getCount(files, parent) {
     let subFiles;
@@ -19,11 +11,12 @@ function getCount(files, parent) {
     try {
         files.forEach(file => {
             const filePath = `${parent}/${file}`;
+            const fileStats = fs.statSync(filePath);
 
-            if (!file.match(/.\./)) {
+            if (fileStats.isDirectory()) {
                 subFiles = fs.readdirSync(filePath);
                 count += getCount(subFiles, filePath);
-            } else if (file.match(/.\.js$/)) {
+            } else {
                 ++count;
             }
         });
@@ -36,6 +29,22 @@ function getCount(files, parent) {
     return count;
 }
 
-count = getCount(files, dir);
+function main() {
+    console.log(dir);
 
-console.log(`number of files: ${count}`);
+    try {
+        files = fs.readdirSync(dir);
+    } catch (e) {
+        console.log(`couldn't read dir`);
+        console.log(e);
+    }
+
+    scanSubdir = scanSubdir || [];
+    count = getCount(files, dir);
+
+    console.log(`number of files: ${count}`);
+
+    return count;
+}
+
+return main();
