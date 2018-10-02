@@ -22,6 +22,7 @@ function getCount(files, parent) {
 
     try {
         files.forEach(file => {
+
             let filePath;
             let fileStats;
 
