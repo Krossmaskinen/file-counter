@@ -35,7 +35,7 @@ function getCount(files, parent) {
 
             if (fileStats.isDirectory()) {
                 subFiles = fs.readdirSync(filePath);
-                count += getCount(subFiles, filePath);
+                getCount(subFiles, filePath);
             } else {
                 ++count;
             }
